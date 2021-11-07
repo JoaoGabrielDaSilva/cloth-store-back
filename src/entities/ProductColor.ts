@@ -6,31 +6,25 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { Product } from "./Product";
-import { User } from "./User";
 
-@Entity("shopping_cart")
-class Cart {
+@Entity("product_color")
+class ProductColor {
   @PrimaryColumn()
   id: string;
 
-  @Column()
-  user_id: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "user_id" })
-  user: User;
-
-  @ManyToMany(() => Product)
-  @JoinTable({
-    joinColumns: [{ name: "shopping_cart_id" }, { name: "product_id" }],
-  })
+  @ManyToOne(() => Product)
   products: Product[];
+
+  @Column()
+  name: string;
+
+  @Column()
+  color: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -45,4 +39,4 @@ class Cart {
   }
 }
 
-export { Cart };
+export { ProductColor };
