@@ -6,6 +6,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -17,11 +18,11 @@ class ProductColor {
   @PrimaryColumn()
   id: string;
 
-  @ManyToOne(() => Product)
-  products: Product[];
-
   @Column()
   name: string;
+
+  @OneToOne(() => Product)
+  product: Product
 
   @Column()
   color: string;

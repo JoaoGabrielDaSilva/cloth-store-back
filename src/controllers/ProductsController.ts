@@ -23,6 +23,24 @@ class ProductsController {
       });
     }
   }
+  async findById(request: Request, response: Response): Promise<Response> {
+
+    const { id } = request.params;
+    const productsService = new ProductsService();
+
+    try {
+      const product = await productsService.findById(id
+      )
+
+      return response.json(product);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json({
+        message: error.message,
+      });
+    }
+
+  }
 }
 
 export { ProductsController };

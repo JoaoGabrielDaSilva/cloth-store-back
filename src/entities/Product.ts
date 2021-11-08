@@ -23,10 +23,23 @@ class Product {
   @ManyToMany(() => Cart)
   carts: Cart[];
 
-  @ManyToMany(() => Product)
+  @ManyToMany(() => Product, () => Product)
+  @JoinTable({
+    name: "product_products",
+    joinColumn: {
+     name: "product_id",
+     referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+     name: "related_product_id",
+     referencedColumnName: "id"
+     }
+  })
   colors: Product[];
 
-  @OneToMany(() => Product, () => ProductColor)
+  
+
+  @OneToOne(() => ProductColor)
   color: ProductColor;
 
   @Column()

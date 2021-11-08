@@ -18,7 +18,7 @@ class ProductsService {
     price: number,
     colorName: string,
     color: string,
-    colors: Product[]
+    colors: Array<any>
   ) {
     if (!name || !price || !colorName || !color) {
       throw new Error("Dados preenchidos de forma incorreta!");
@@ -31,34 +31,56 @@ class ProductsService {
 
     const productColor = productColorsRepository.create({
       name: colorName,
-      color,
+      color: color
     });
 
+
+
+
     const colorsArray = colors.map((product) => {
-      return {
+      return productsRepository.create({
         name: product.name,
         price: product.price,
         color: productColorsRepository.create({
-          name: product.color.name,
-          color: product.color.color,
-        }),
-      };
+          name: product.colorName,
+          color: product.color
+        })
+      })
     });
 
+
+  
     const product = productsRepository.create({
       name,
       price,
       color: productColor,
-      colors: colorsArray,
+      colors: colorsArray
     });
 
     if (product) {
-      console.log(product);
-      await productsRepository.save(product);
+      await productsRepository.save(product)
+      await productsRepository.save(colorsArray)
+      await productColorsRepository.save(productColor)
+
       return product;
     }
 
     throw new Error("Não foi possível criar o produto");
+  }
+
+  async findById(id: string) {
+
+    const productsRepository = getCustomRepository(ProductsRepository);
+
+
+    const product = await productsRepository.findOne(id, {relations: ['colors']})
+
+    console.log(product);
+    
+
+    if (product) {
+      return product
+    }
   }
 }
 
