@@ -38,18 +38,22 @@ class ProductsService {
 
 
     const colorsArray = colors.map((product) => {
+      const a = productColorsRepository.create({
+        name: product.colorName,
+        color: product.color
+      })
+      productColorsRepository.save(a)
+
       return productsRepository.create({
         name: product.name,
         price: product.price,
-        color: productColorsRepository.create({
-          name: product.colorName,
-          color: product.color
-        })
+        color: a,
       })
     });
 
 
-  
+
+
     const product = productsRepository.create({
       name,
       price,
@@ -57,8 +61,11 @@ class ProductsService {
       colors: colorsArray
     });
 
+    
+
+
     if (product) {
-      await productsRepository.save(product)
+      console.log(await productsRepository.save(product))
       await productsRepository.save(colorsArray)
       await productColorsRepository.save(productColor)
 
@@ -73,7 +80,7 @@ class ProductsService {
     const productsRepository = getCustomRepository(ProductsRepository);
 
 
-    const product = await productsRepository.findOne(id, {relations: ['colors']})
+    const product = await productsRepository.findOne(id, {relations: ['colors', 'color', 'colors.color']})
 
     console.log(product);
     

@@ -37,9 +37,8 @@ class Product {
   })
   colors: Product[];
 
-  
-
   @OneToOne(() => ProductColor)
+  @JoinColumn({name: 'id'})
   color: ProductColor;
 
   @Column()
