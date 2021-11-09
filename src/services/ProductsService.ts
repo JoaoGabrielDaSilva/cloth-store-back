@@ -34,25 +34,20 @@ class ProductsService {
       color: color
     });
 
-
-
-
     const colorsArray = colors.map((product) => {
-      const a = productColorsRepository.create({
+      const color = productColorsRepository.create({
         name: product.colorName,
         color: product.color
       })
-      productColorsRepository.save(a)
+      productColorsRepository.save(color)
 
       return productsRepository.create({
         name: product.name,
         price: product.price,
-        color: a,
+        color: color,
+        colors: []
       })
     });
-
-
-
 
     const product = productsRepository.create({
       name,
@@ -60,13 +55,19 @@ class ProductsService {
       color: productColor,
       colors: colorsArray
     });
-
     
-
-
+    colorsArray.forEach(item => {
+        colorsArray.forEach(element => {
+          if (item.id !== element.id) {
+            item.colors.push(element)
+          }
+        })
+        item.colors.push(product)
+        productsRepository.save(item)
+    })
+    
     if (product) {
-      console.log(await productsRepository.save(product))
-      await productsRepository.save(colorsArray)
+      await productsRepository.save(product)
       await productColorsRepository.save(productColor)
 
       return product;
@@ -78,12 +79,23 @@ class ProductsService {
   async findById(id: string) {
 
     const productsRepository = getCustomRepository(ProductsRepository);
-
-
-    const product = await productsRepository.findOne(id, {relations: ['colors', 'color', 'colors.color']})
-
-    console.log(product);
     
+    const product = productsRepository
+    .createQueryBuilder(                                  "product")
+    .where(                                "product.id = :id", {id})
+    .innerJoinAndSelect(                 "product.colors", "colors")
+    .where(                           "color.id = product.color.id")
+    .innerJoinAndSelect(                   "product.color", "color")
+    .innerJoinAndSelect(             "colors.color", "colors_color")
+    .where(                     "colors.color.id = colors_color.id")
+    .select([
+      'product.id'     , 'product.name'     , 'product.color'      , 
+      'color.id'       , 'color.name'       , 'color.color'        ,
+      'colors.id'      , 'colors.name'      , 'colors.color'       ,
+      'colors_color.id', 'colors_color.name', 'colors_color.color' ,
+    ])
+    .getOne();
+
 
     if (product) {
       return product
