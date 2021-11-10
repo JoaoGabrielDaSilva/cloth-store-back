@@ -12,7 +12,11 @@ export class CreateProductImage1635381799811 implements MigrationInterface {
                     isPrimary: true,
                 },   
                 {
-                    name: 'product_image',
+                    name: 'product_id',
+                    type: 'varchar',
+                }, 
+                {
+                    name: 'image_uri',
                     type: 'varchar',
                 },                          
                 {

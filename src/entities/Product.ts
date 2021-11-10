@@ -14,6 +14,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { Cart } from "./Cart";
 import { ProductColor } from "./ProductColor";
+import { ProductImage } from "./ProductImage";
 
 @Entity("product")
 class Product {
@@ -40,6 +41,9 @@ class Product {
   @OneToOne(() => ProductColor)
   @JoinColumn({name: 'id'})
   color: ProductColor;
+
+  @OneToMany(() => ProductImage, image => image.product)
+  images: ProductImage[]
 
   @Column()
   name: string;

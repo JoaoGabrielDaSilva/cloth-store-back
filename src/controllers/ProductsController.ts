@@ -3,7 +3,7 @@ import { ProductsService } from "../services/ProductsService";
 
 class ProductsController {
   async create(request: Request, response: Response): Promise<Response> {
-    const { name, price, colorName, color, colors } = request.body;
+    const { name, price, colorName, color, colors, image } = request.body;
     const productsService = new ProductsService();
 
     try {
@@ -12,7 +12,8 @@ class ProductsController {
         price,
         colorName,
         color,
-        colors
+        colors,
+        image
       );
 
       return response.json(product);
